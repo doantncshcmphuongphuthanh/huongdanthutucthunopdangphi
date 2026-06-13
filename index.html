@@ -14,11 +14,11 @@
 
     <div class="main-container">
         <div class="book-container">
-            <div class="book" id="book">
-                
-                <button id="prev-btn" class="nav-arrow left">◀</button>
-                <button id="next-btn" class="nav-arrow right">▶</button>
 
+            <button id="prev-btn" class="nav-arrow left">◀</button>
+            <button id="next-btn" class="nav-arrow right">▶</button>
+
+            <div class="book" id="book">
                 <div class="page cover" id="page-1">
                     <div class="front-face">
                         <div class="image-placeholder-box">
@@ -162,7 +162,11 @@
         </div>
     </div>
 
-    <img src="" alt="" class="BACKGROUND">
+    <div class="rotate-message" id="rotate-message">
+        <div class="rotate-icon">↻</div>
+        <p>Vui lòng xoay ngang điện thoại<br>để đọc sách rõ nhất</p>
+        <button id="close-rotate">Đã hiểu</button>
+    </div>
 
     <script src="js/flipbook.js"></script>
 </body>

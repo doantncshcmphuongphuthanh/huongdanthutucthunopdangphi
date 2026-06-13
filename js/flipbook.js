@@ -315,3 +315,80 @@ document.addEventListener('keydown', (e) => {
 });
 
 updateMuiTenVaSlider();
+
+// ==========================================
+// TÍNH NĂNG VUỐT TRÊN ĐIỆN THOẠI (SWIPE)
+// ==========================================
+let touchstartX = 0;
+let touchstartY = 0;
+let touchendX = 0;
+let touchendY = 0;
+
+const bookArea = document.querySelector('.main-container');
+
+bookArea.addEventListener('touchstart', e => {
+    touchstartX = e.changedTouches[0].screenX;
+    touchstartY = e.changedTouches[0].screenY;
+}, { passive: true });
+
+bookArea.addEventListener('touchend', e => {
+    touchendX = e.changedTouches[0].screenX;
+    touchendY = e.changedTouches[0].screenY;
+    handleSwipe();
+}, { passive: true });
+
+function handleSwipe() {
+    // Đo khoảng cách vuốt ngang và dọc
+    const diffX = touchendX - touchstartX;
+    const diffY = touchendY - touchstartY;
+    
+    // Chỉ kích hoạt lật trang nếu vuốt ngang nhiều hơn vuốt dọc (tránh nhầm với cuộn trang)
+    if (Math.abs(diffX) > Math.abs(diffY) && Math.abs(diffX) > 40) {
+        if (diffX < 0) {
+            // Vuốt sang trái -> Trang tiếp theo
+            if (currentLocation < maxLocation) goToLocation(currentLocation + 1);
+        } else {
+            // Vuốt sang phải -> Trang trước
+            if (currentLocation > 1) goToLocation(currentLocation - 1);
+        }
+    }
+}
+
+// Xử lý nút tắt màn hình yêu cầu xoay điện thoại
+const rotateMsg = document.getElementById('rotate-message');
+const closeRotateBtn = document.getElementById('close-rotate');
+if(closeRotateBtn && rotateMsg) {
+    closeRotateBtn.addEventListener('click', () => {
+        rotateMsg.style.display = 'none';
+    });
+}
+
+// Cải tiến hàm resizeBook để hiển thị to hơn trên Mobile
+const originalResizeBook = resizeBook;
+window.resizeBook = function() {
+    const baseWidth = 1120; 
+    const baseHeight = 860; 
+
+    const windowWidth = window.innerWidth;
+    const windowHeight = window.innerHeight;
+
+    // Trên mobile, trừ bớt padding đi để sách vừa khít màn hình hơn
+    let availableWidth = windowWidth < 768 ? windowWidth - 10 : windowWidth;
+    let availableHeight = windowWidth < 768 ? windowHeight - 80 : windowHeight;
+
+    let scaleX = availableWidth / baseWidth;
+    let scaleY = availableHeight / baseHeight;
+
+    let scale = Math.min(scaleX, scaleY);
+
+    if (!document.fullscreenElement) {
+        if (scale > 1) scale = 1;
+    } else {
+        if (scale > 1.5) scale = 1.5;
+    }
+
+    document.documentElement.style.setProperty('--book-scale', scale);
+};
+
+// Gọi lại 1 lần để cập nhật tỷ lệ ngay khi thêm script
+resizeBook();
