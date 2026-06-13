@@ -246,10 +246,9 @@ slider.addEventListener('mouseleave', () => {
     tooltip.style.display = 'none';
 });
 
-// ĐỒNG BỘ KÍCH THƯỚC MÀN HÌNH
 function resizeBook() {
-    const baseWidth = 1120; 
-    const baseHeight = 860; 
+    const baseWidth = 1040; // Tổng chiều ngang 2 trang sách
+    const baseHeight = 780; // Chiều cao sách
 
     const windowWidth = window.innerWidth;
     const windowHeight = window.innerHeight;
@@ -259,14 +258,30 @@ function resizeBook() {
 
     let scale = Math.min(scaleX, scaleY);
 
-    if (!document.fullscreenElement) {
-        if (scale > 1) scale = 1;
+    if (windowWidth < 768) {
+        // KIỂM TRA HƯỚNG MÀN HÌNH ĐIỆN THOẠI
+        if (windowHeight > windowWidth) {
+            // MÀN HÌNH DỌC: Ép scale theo đúng chiều rộng màn hình (chạm mép 100%)
+            scale = windowWidth / baseWidth;
+        } else {
+            // MÀN HÌNH NGANG: Ưu tiên hiển thị trọn vẹn theo chiều cao
+            scale = windowHeight / baseHeight;
+        }
     } else {
-        if (scale > 1.5) scale = 1.5;
+        // TRÊN MÁY TÍNH
+        if (!document.fullscreenElement) {
+            if (scale > 1) scale = 1;
+        } else {
+            if (scale > 1.5) scale = 1.5;
+        }
     }
 
     document.documentElement.style.setProperty('--book-scale', scale);
 }
+
+window.addEventListener('orientationchange', () => {
+    setTimeout(resizeBook, 100);
+});
 
 window.addEventListener('resize', resizeBook);
 window.addEventListener('orientationchange', resizeBook);

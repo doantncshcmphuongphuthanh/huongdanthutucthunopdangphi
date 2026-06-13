@@ -227,11 +227,14 @@ body {
 .nav-arrow.right { right: -40px; }
 .book.is-open .nav-arrow.left { left: -560px; }
 .nav-arrow:hover { color: #cc0000; transform: scale(1.2); }
-.nav-arrow.hidden { opacity: 0; pointer-events: none; }
+.nav-arrow.hidden {opacity: 0;pointer-events: none;visibility: hidden;}
 
 .slider-container {
-    position: relative; width: 100%; max-width: 800px; margin-top: 25px;
+    position: relative;
+    width: 100%;
+    max-width: 800px;
     transition: transform 0.6s cubic-bezier(0.25, 1, 0.5, 1);
+    margin-top: 25px;
 }
 .fullscreen-active .slider-container { transform: translateY(50px); }
 
@@ -246,10 +249,18 @@ body {
 #page-slider::-webkit-slider-thumb:hover { background: #cc0000; }
 
 .slider-tooltip {
-    position: absolute; top: -35px; transform: translateX(-50%);
-    background-color: #1a202c; color: white; padding: 4px 12px;
-    font-size: 12px; border-radius: 4px; white-space: nowrap; display: none;
-    pointer-events: none; box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+    position: absolute;
+    top: -35px;
+    transform: translateX(-50%);
+    background-color: #1a202c;
+    color: white;
+    padding: 4px 12px;
+    font-size: 12px;
+    border-radius: 4px;
+    white-space: nowrap;
+    display: none;
+    pointer-events: none;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.2);
 }
 .slider-tooltip::after {
     content: ""; position: absolute; bottom: -4px; left: 50%; transform: translateX(-50%);
@@ -257,10 +268,22 @@ body {
 }
 
 .fullscreen-btn {
-    position: fixed; top: 20px; left: 20px; z-index: 1000; background-color: #ffffff;
-    border: 1px solid #cbd5e1; color: #2c3e50; width: 46px; height: 46px; border-radius: 50%;
-    cursor: pointer; display: flex; align-items: center; justify-content: center;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.1); transition: background-color 0.2s, transform 0.2s, color 0.2s;
+    position: fixed;
+    top: 20px;
+    left: 20px;
+    z-index: 1000;
+    background-color: #ffffff;
+    border: 1px solid #cbd5e1;
+    color: #2c3e50;
+    width: 46px;
+    height: 46px;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    transition: background-color 0.2s, transform 0.2s, color 0.2s;
 }
 .fullscreen-btn:hover { background-color: #f8fafc; color: #cc0000; transform: scale(1.08); }
 /* =========================================================
@@ -357,7 +380,62 @@ body {
     }
 }
 
-/* Tắt màn hình xoay ngang nếu người dùng đã quay ngang (Landscape) */
 @media (max-width: 768px) and (orientation: landscape) {
     .rotate-message { display: none !important; }
+}
+
+.book { transform: scale(var(--book-scale, 1)) translateX(0%) !important; }
+.book.is-open { transform: scale(var(--book-scale, 1)) translateX(50%) !important; }
+.book.is-closed-right { transform: scale(var(--book-scale, 1)) translateX(100%) !important; }
+
+.fullscreen-active .book { transform: scale(1.22) translateX(0%) !important; }
+.fullscreen-active .book.is-open { transform: scale(1.22) translateX(50%) !important; }
+.fullscreen-active .book.is-closed-right { transform: scale(1.22) translateX(100%) !important; }
+
+@media (max-width: 768px) {
+    .fullscreen-btn { 
+        display: none !important; 
+    }
+    
+    .main-container { 
+        padding: 5px !important; 
+    }
+}
+
+/* =========================================================
+   TỐI ƯU TRẢI NGHIỆM ĐỌC SÁCH
+========================================================= */
+
+/* 1. Nút bấm chuyển trang: mờ đi khi không tương tác để không che chữ */
+.nav-arrow.left, .nav-arrow.right {
+    opacity: 0.15; /* Làm mờ xuống 15%, vừa đủ thấy mờ mờ không cản trở đọc */
+    transition: opacity 0.3s ease; /* Hiệu ứng mờ dần cho mượt */
+}
+
+/* Rõ nét trở lại khi di chuột vào (trên PC) hoặc chạm vào (trên Mobile) */
+.nav-arrow.left:hover, .nav-arrow.right:hover,
+.nav-arrow.left:active, .nav-arrow.right:active {
+    opacity: 1;
+}
+
+/* =========================================================
+   TÙY CHỈNH RIÊNG CHO ĐIỆN THOẠI (DƯỚI 768px)
+========================================================= */
+@media (max-width: 768px) {
+    /* Xóa khoảng cách thừa xung quanh để sách có thể chạm hẳn vào viền */
+    .main-container {
+        padding: 0 !important; 
+    }
+
+    /* Xóa margin-top của slider trên điện thoại */
+    .slider-container {
+        margin-top: 0 !important;
+    }
+}
+
+/* Chỉ ẩn nút Fullscreen khi cầm điện thoại CHIỀU DỌC */
+@media (max-width: 768px) and (orientation: portrait) {
+    .fullscreen-btn {
+        display: none !important;
+    }
 }
