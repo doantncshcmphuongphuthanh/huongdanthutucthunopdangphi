@@ -153,7 +153,7 @@ body {
 .front-face,
 .back-face {
     position: absolute;
-    width: 100%;
+    width: 108%;
     height: 100%;
     backface-visibility: hidden;
     background-color: #ffffff;
