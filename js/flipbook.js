@@ -49,7 +49,12 @@ document.addEventListener('fullscreenchange', () => {
 
 // KIỂM TRA ĐIỆN THOẠI DỌC
 function isMobilePortrait() {
-    return window.innerWidth < 768 && window.innerHeight > window.innerWidth;
+    const isTouchDevice = ('ontouchstart' in window) || (navigator.maxTouchPoints > 0);
+    const isPortrait = window.innerHeight > window.innerWidth;
+    // Tăng hạn mức kiểm tra lên 932px (mức tối đa của iPhone 14/15 Pro Max hiện tại)
+    const isMobileWidth = window.innerWidth <= 952; 
+    
+    return isTouchDevice && isPortrait && isMobileWidth;
 }
 
 // CẬP NHẬT GIAO DIỆN & PANNING (TRƯỢT) TRÊN MOBILE
@@ -293,28 +298,31 @@ slider.addEventListener('mouseleave', () => tooltip.style.display = 'none');
 // TỰ ĐỘNG CHỈNH KÍCH THƯỚC (Responsive)
 function resizeBook() {
     const baseWidth = 1040;  // Máy tính (2 trang)
-    const singleWidth = 520; // Điện thoại (1 trang)
+    const singleWidth = 520; // Điện thoại dọc (1 trang)
     const baseHeight = 780;
     const windowWidth = window.innerWidth;
     const windowHeight = window.innerHeight;
     let scale;
 
+    const isTouch = ('ontouchstart' in window) || (navigator.maxTouchPoints > 0);
+    const isLandscape = window.innerWidth > window.innerHeight;
+
     if (isMobilePortrait()) {
         // Zoom khít 1 trang khi cầm dọc
         let availableWidth = windowWidth;
-        let availableHeight = windowHeight - 60;
+        let availableHeight = windowHeight - 80; // Trừ không gian cho slider di động
         let scaleX = availableWidth / singleWidth;
         let scaleY = availableHeight / baseHeight;
         scale = Math.min(scaleX, scaleY);
-    } else if (windowWidth < 768) {
-        // Xoay ngang trên điện thoại (hiển thị 2 trang)
-        let availableWidth = windowWidth - 10;
-        let availableHeight = windowHeight - 40;
+    } else if (isTouch && isLandscape) {
+        // ĐIỆN THOẠI XOAY NGANG: Tính toán khít theo chiều cao để không bị đẩy lên trên
+        let availableWidth = windowWidth - 20;
+        let availableHeight = windowHeight - 70; // Trừ khoảng trống cho slider nằm dưới gọn gàng
         let scaleX = availableWidth / baseWidth;
         let scaleY = availableHeight / baseHeight;
         scale = Math.min(scaleX, scaleY);
     } else {
-        // Máy tính
+        // Máy tính/Desktop mặc định
         let scaleX = windowWidth / baseWidth;
         let scaleY = windowHeight / baseHeight;
         scale = Math.min(scaleX, scaleY);
@@ -323,7 +331,7 @@ function resizeBook() {
     }
 
     document.documentElement.style.setProperty('--book-scale', scale);
-    updateView(); // Reset lại góc nhìn cho đúng hệ số Scale mới
+    updateView();
 }
 
 window.addEventListener('resize', resizeBook);
