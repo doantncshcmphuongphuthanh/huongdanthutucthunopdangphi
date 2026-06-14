@@ -322,7 +322,7 @@ body {
     width: 100%;
     max-width: 800px;
     transition: transform 0.6s cubic-bezier(0.25, 1, 0.5, 1);
-    margin-top: 10px;
+    margin-top: 5px;
 }
 
 .fullscreen-active .slider-container {
@@ -406,8 +406,6 @@ body {
     transform: scale(1.08);
 }
 
-/* ========================================================= PHIÊN BẢN ĐIỆN THOẠI & NÚT ĐIỀU HƯỚNG CẢI TIẾN ========================================================= */
-/* Sửa lại nút bấm để nó hiển thị trôi nổi trên mọi màn hình */
 .nav-arrow {
     position: fixed;
     top: 50%;
@@ -441,12 +439,10 @@ body {
     right: 15px;
 }
 
-/* Ẩn thông báo xoay màn hình trên Desktop */
 .rotate-message {
     display: none;
 }
 
-/* Responsive cho màn hình nhỏ (Mobile) */
 @media (max-width: 768px) {
     .nav-arrow {
         width: 36px;
@@ -462,7 +458,6 @@ body {
         right: 5px;
     }
 
-    /* Thanh trượt thu gọn lại và có mờ nền */
     .slider-container {
         position: fixed;
         bottom: 4%;
@@ -488,7 +483,6 @@ body {
         height: 38px;
     }
 
-    /* Thiết kế màn hình khuyên xoay ngang */
     .rotate-message {
         position: fixed;
         top: 0;
@@ -583,17 +577,12 @@ body {
     }
 }
 
-/* ========================================================= TỐI ƯU TRẢI NGHIỆM ĐỌC SÁCH ========================================================= */
-/* 1. Nút bấm chuyển trang: mờ đi khi không tương tác để không che chữ */
 .nav-arrow.left,
 .nav-arrow.right {
     opacity: 0.15;
-    /* Làm mờ xuống 15%, vừa đủ thấy mờ mờ không cản trở đọc */
     transition: opacity 0.3s ease;
-    /* Hiệu ứng mờ dần cho mượt */
 }
 
-/* Rõ nét trở lại khi di chuột vào (trên PC) hoặc chạm vào (trên Mobile) */
 .nav-arrow.left:hover,
 .nav-arrow.right:hover,
 .nav-arrow.left:active,
@@ -601,117 +590,43 @@ body {
     opacity: 1;
 }
 
-/* ========================================================= TÙY CHỈNH RIÊNG CHO ĐIỆN THOẠI (DƯỚI 768px) ========================================================= */
 @media (max-width: 768px) {
 
-    /* Xóa khoảng cách thừa xung quanh để sách có thể chạm hẳn vào viền */
     .main-container {
         padding: 0 !important;
     }
 
-    /* Xóa margin-top của slider trên điện thoại */
     .slider-container {
         margin-top: 0 !important;
     }
 }
 
-/* Chỉ ẩn nút Fullscreen khi cầm điện thoại CHIỀU DỌC */
 @media (max-width: 768px) and (orientation: portrait) {
     .fullscreen-btn {
         display: none !important;
     }
 }
 
-/* =========================================================
-   CẤU HÌNH PHÂN TRANG CHO MÀN HÌNH DỌC (MOBILE PORTRAIT)
-   ========================================================= */
 @media (max-width: 768px) and (orientation: portrait) {
-    /* Khi ở chế độ dọc, ẩn bớt các phần tràn màn hình để không lỗi cuộn */
     body, .main-container {
         overflow: hidden;
     }
 
-    /* Mặc định cấu trúc hiển thị trang đơn */
     .mobile-portrait-mode .book {
         transition: transform 0.6s cubic-bezier(0.25, 1, 0.5, 1) !important;
     }
 
-    /* TRANG BÊN TRÁI: Dịch chuyển toàn bộ sách sang phải 100% để lộ trang trái */
     .main-container.mobile-portrait-mode.focus-left .book {
         transform: scale(var(--book-scale, 1)) translateX(100%) !important;
     }
 
-    /* TRANG BÊN PHẢI (VÀ BÌA): Giữ nguyên vị trí gốc để lộ trang phải */
     .main-container.mobile-portrait-mode.focus-right .book {
         transform: scale(var(--book-scale, 1)) translateX(0%) !important;
     }
 }
 
-/* =========================================================
-   ÁP DỤNG TRÊN TẤT CẢ THIẾT BỊ DI ĐỘNG CÓ MÀN HÌNH CẢM ỨNG
-   ========================================================= */
-@media (max-width: 1024px) and (pointer: coarse) {
-    /* Khóa cuộn toàn trang triệt để */
-    html, body {
-        overflow: hidden !important;
-        position: fixed;
-        width: 100%;
-        height: 100%;
-    }
-
-    /* ẨN TUYỆT ĐỐI nút Fullscreen trên mọi dòng iPhone lớn nhỏ */
+@media (max-width: 1024px) and (orientation: landscape) {
     .fullscreen-btn {
         display: none !important;
-    }
-
-    /* Đảm bảo Container chính luôn căn giữa mọi thành phần bên trong */
-    .main-container {
-        padding: 0 !important;
-        overflow: hidden;
-        display: flex;
-        flex-direction: column;
-        justify-content: center; /* Căn giữa dọc */
-        align-items: center;     /* Căn giữa ngang */
-        height: 100vh;
-        width: 100vw;
-    }
-
-    .book-container {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        width: 100%;
-        /* Tự động tính toán chiều cao linh hoạt tránh đẩy sách lên trên */
-        height: calc(700px * var(--book-scale, 1)) !important; 
-    }
-
-    /* Cấu hình lại thanh Slider di động gọn gàng ở dưới đáy */
-    .slider-container {
-        position: fixed;
-        bottom: 10px;
-        width: 80% !important;
-        left: 50%;
-        transform: translateX(-50%) !important;
-        z-index: 1000;
-        background: rgba(255, 255, 255, 0.9);
-        padding: 8px 15px;
-        border-radius: 20px;
-        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.15);
-        margin-top: 0 !important;
-    }
-}
-
-/* TỐI ƯU RIÊNG KHI XOAY NGANG ĐIỆN THOẠI (LANDSCAPE) */
-@media (max-width: 1024px) and (orientation: landscape) and (pointer: coarse) {
-    /* Khi xoay ngang, cho slider nhỏ lại một chút để nhường chỗ hiển thị tối đa cho sách */
-    .slider-container {
-        bottom: 5px;
-        padding: 5px 12px;
-        width: 60% !important; 
-    }
-    
-    /* Ép sách luôn nằm đúng tâm màn hình, không bị thừa khoảng trống trên */
-    .book {
-        margin-top: 0 !important;
     }
 }

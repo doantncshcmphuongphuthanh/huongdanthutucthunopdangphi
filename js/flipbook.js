@@ -9,12 +9,11 @@ const mainContainer = document.querySelector('.main-container');
 const iconMaximize = document.querySelector('.icon-maximize');
 const iconMinimize = document.querySelector('.icon-minimize');
 
-// Cấu trúc dữ liệu theo dõi trang
-let currentSpread = 1;      // Dùng cho máy tính (1 tới 9)
-let currentView = 1;        // Dùng cho điện thoại (1 tới 16)
-const numOfPages = pages.length; // 8 lá
-const maxSpread = numOfPages + 1; // 9 trang đôi
-const maxViews = numOfPages * 2;  // 16 góc nhìn đơn
+let currentSpread = 1;      
+let currentView = 1;        
+const numOfPages = pages.length; 
+const maxSpread = numOfPages + 1; 
+const maxViews = numOfPages * 2;  
 let isTransitioning = false;
 
 slider.max = maxSpread;
@@ -47,32 +46,22 @@ document.addEventListener('fullscreenchange', () => {
     setTimeout(resizeBook, 50);
 });
 
-// KIỂM TRA ĐIỆN THOẠI DỌC
 function isMobilePortrait() {
-    const isTouchDevice = ('ontouchstart' in window) || (navigator.maxTouchPoints > 0);
-    const isPortrait = window.innerHeight > window.innerWidth;
-    // Tăng hạn mức kiểm tra lên 932px (mức tối đa của iPhone 14/15 Pro Max hiện tại)
-    const isMobileWidth = window.innerWidth <= 952; 
-    
-    return isTouchDevice && isPortrait && isMobileWidth;
+    return window.innerWidth < 768 && window.innerHeight > window.innerWidth;
 }
 
-// CẬP NHẬT GIAO DIỆN & PANNING (TRƯỢT) TRÊN MOBILE
 function updateView() {
     const mobileMode = isMobilePortrait();
     
-    // Ánh xạ từ View hiện tại (1-16) ra Trang Đôi (1-9)
     let targetSpread;
     if (currentView === 1) targetSpread = 1;
     else if (currentView === maxViews) targetSpread = maxSpread;
     else targetSpread = Math.floor(currentView / 2) + 1;
 
-    // Nếu thay đổi trang đôi, thực hiện hiệu ứng lật 3D
     if (currentSpread !== targetSpread) {
         goToSpread(targetSpread);
     }
 
-    // Xử lý góc nhìn (trượt qua lại) khi ở trên điện thoại dọc
     if (mobileMode) {
         mainContainer.classList.add('mobile-portrait-mode');
         const focusLeft = (currentView % 2 === 0);
@@ -93,7 +82,6 @@ function updateView() {
             }
         }
     } else {
-        // Chế độ máy tính/ngang: xóa hết class của mobile
         mainContainer.classList.remove('mobile-portrait-mode', 'focus-left', 'focus-right');
     }
 
@@ -130,7 +118,6 @@ function closeBook(isAtBeginning) {
     }
 }
 
-// ĐIỀU HƯỚNG TRANG KẾ TIẾP / QUAY LẠI
 function prevView() {
     if (isTransitioning) return;
     if (isMobilePortrait()) {
@@ -171,7 +158,6 @@ function nextView() {
 prevBtn.addEventListener("click", prevView);
 nextBtn.addEventListener("click", nextView);
 
-// HIỆU ỨNG LẬT TRANG LÕI 3D
 function goToSpread(newSpread) {
     if (newSpread === currentSpread) return;
     isTransitioning = true;
@@ -228,7 +214,6 @@ function goToSpread(newSpread) {
     currentSpread = newSpread;
 }
 
-// HOVER GÓC TRANG
 pages.forEach((page, index) => {
     const frontFace = page.querySelector('.front-face');
     const backFace = page.querySelector('.back-face');
@@ -271,7 +256,6 @@ pages.forEach((page, index) => {
     });
 });
 
-// SỰ KIỆN THANH TRƯỢT
 slider.addEventListener('change', (e) => {
     const targetSpread = parseInt(e.target.value);
     if (targetSpread === 1) currentView = 1;
@@ -295,34 +279,27 @@ slider.addEventListener('mousemove', (e) => {
 });
 slider.addEventListener('mouseleave', () => tooltip.style.display = 'none');
 
-// TỰ ĐỘNG CHỈNH KÍCH THƯỚC (Responsive)
 function resizeBook() {
-    const baseWidth = 1040;  // Máy tính (2 trang)
-    const singleWidth = 520; // Điện thoại dọc (1 trang)
+    const baseWidth = 1040;  
+    const singleWidth = 520; 
     const baseHeight = 780;
     const windowWidth = window.innerWidth;
     const windowHeight = window.innerHeight;
     let scale;
 
-    const isTouch = ('ontouchstart' in window) || (navigator.maxTouchPoints > 0);
-    const isLandscape = window.innerWidth > window.innerHeight;
-
     if (isMobilePortrait()) {
-        // Zoom khít 1 trang khi cầm dọc
         let availableWidth = windowWidth;
-        let availableHeight = windowHeight - 80; // Trừ không gian cho slider di động
+        let availableHeight = windowHeight - 60;
         let scaleX = availableWidth / singleWidth;
         let scaleY = availableHeight / baseHeight;
         scale = Math.min(scaleX, scaleY);
-    } else if (isTouch && isLandscape) {
-        // ĐIỆN THOẠI XOAY NGANG: Tính toán khít theo chiều cao để không bị đẩy lên trên
-        let availableWidth = windowWidth - 20;
-        let availableHeight = windowHeight - 70; // Trừ khoảng trống cho slider nằm dưới gọn gàng
+    } else if (windowWidth < 768) {
+        let availableWidth = windowWidth - 10;
+        let availableHeight = windowHeight - 40;
         let scaleX = availableWidth / baseWidth;
         let scaleY = availableHeight / baseHeight;
         scale = Math.min(scaleX, scaleY);
     } else {
-        // Máy tính/Desktop mặc định
         let scaleX = windowWidth / baseWidth;
         let scaleY = windowHeight / baseHeight;
         scale = Math.min(scaleX, scaleY);
@@ -331,7 +308,7 @@ function resizeBook() {
     }
 
     document.documentElement.style.setProperty('--book-scale', scale);
-    updateView();
+    updateView(); 
 }
 
 window.addEventListener('resize', resizeBook);
